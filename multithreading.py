@@ -1,4 +1,4 @@
-import threading, time
+import threading
 
 def work(x):
     while x > 0:
