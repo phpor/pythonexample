@@ -1,7 +1,7 @@
 import paramiko
 client = paramiko.SSHClient()
 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-client.connect('172.16.22.169', username='test', password='lijunjie')
+client.connect('172.16.22.169', username='phpor', password='lijunjie')
 
 transport = client.get_transport()
 transport.set_keepalive(30)
