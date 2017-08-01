@@ -17,6 +17,7 @@ class A:  # 类定义前最好保留两个空行,注释也不要有的空行
     """
 
     name = ""
+    __age = 10  # private
 
     def __init__(self, name="phpor"):  # 构造函数
         self.name = name
