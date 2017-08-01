@@ -10,3 +10,11 @@ print(isinstance(u"hello", unicode))    # True
 print(isinstance("hello", basestring))      # True
 print(isinstance(u"hello", basestring))     # True
 
+string = "Hello world"
+
+print(string[:3])           # 0,1,2
+print(string[1:3])          # 1,2
+
+print(string[3:])           # 3,...
+print(string * 2)           # 循环2次
+print(string + string)      # 字符串连接
