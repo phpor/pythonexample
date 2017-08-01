@@ -50,18 +50,17 @@ class A:  # 类定义前最好保留两个空行,注释也不要有的空行
     __name__
     __doc__
 """
-print(A("phpor").__class__)  # __main__.A
-print(A("phpor").__class__.__name__)  # A
+print(A().__class__)  # __main__.A
+print(A().__class__.__name__)  # A
 print(A.__name__)  # A
 print(A.__doc__)
-print(A("phpor").__doc__)  # 这里引用到的是类的文档
+print(A().__doc__)  # 这里引用到的是类的文档
 print(A.name.__doc__)  # 所以这里引用的将不是属性的文档，而是属性所属类的文档
 
 # 对象方法调用
 print("--------- only a  spitter line -------")
-A("phpor").say()  # 不需要 new 关键字
-A("phpor")._pri()  # 下划线前缀仅仅是个约定，编译器会给出提示，但是解释器没有强制阻止
-
+A("python").say()  # 不需要 new 关键字
+A("python")._pri()  # 下划线前缀仅仅是个约定，编译器会给出提示，但是解释器没有强制阻止
 
 
 class B(A):
