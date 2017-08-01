@@ -68,3 +68,15 @@ class B(A):
 
 B.fake_static(": don't use self as not a self")
 print(B.__doc__)
+
+B("phpor").say()
+
+
+class C(A):
+    """
+    C is sub class of A
+    """
+    def __init__(self, name="C name"):      # 当覆盖基类构造函数时，基类构造函数不会被自动调用（一般都这样）
+        A.__init__(self, name)              # 这个和调用任何普通函数没有任何区别，使用基类的类名调用基类
+
+C().say()
