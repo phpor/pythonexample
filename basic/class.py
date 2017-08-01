@@ -1,5 +1,12 @@
 # coding=utf-8
 
+"""
+单下划线、双下划线、头尾双下划线说明：
+    __foo__: 定义的是特列方法，类似 __init__() 之类的。
+    _foo: 以单下划线开头的表示的是 protected 类型的变量，即保护类型只能允许其本身与子类进行访问，不能用于 from module import *
+    __foo: 双下划线的表示的是私有类型(private)的变量, 只能是允许这个类本身进行访问了。
+"""
+
 
 class A:  # 类定义前最好保留两个空行,注释也不要有的空行
     """
@@ -24,7 +31,10 @@ class A:  # 类定义前最好保留两个空行,注释也不要有的空行
         print("Me is " + this.name)
 
     def can_be_static(self):    # 如果方法体中没有用到self变量，则，IDE可能会提示 maybe a static
-        print("This method shuld be a static, because it not use self")
+        print("This method should be a static, because it not use self")
+
+    def __dont_call_me(self):
+        print("This method can not be called by other class: " + self.name)
 
     @staticmethod
     def new(name):  # 静态方法是靠注解实现的
@@ -51,6 +61,7 @@ print(A.name.__doc__)  # 所以这里引用的将不是属性的文档，而是�
 print("--------- only a  spitter line -------")
 A("phpor").say()  # 不需要 new 关键字
 A("phpor")._pri()  # 下划线前缀仅仅是个约定，编译器会给出提示，但是解释器没有强制阻止
+
 
 
 class B(A):
