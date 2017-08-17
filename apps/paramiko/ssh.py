@@ -1,8 +1,6 @@
 # encoding=utf-8
 
-
-
-from tty import SshTty
+from SshTty import SshTty
 
 SshTty().connect()
 
