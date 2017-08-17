@@ -17,7 +17,7 @@ sys.setdefaultencoding('utf8')
 
 try:
     import termios
-    import SshTty
+    import tty
 except ImportError:
     print '\033[1;31m仅支持类Unix系统 Only unix like supported.\033[0m'
     time.sleep(3)
@@ -186,8 +186,8 @@ class SshTty(Tty):
         data = ''
         input_mode = False
         try:
-            SshTty.setraw(sys.stdin.fileno())
-            SshTty.setcbreak(sys.stdin.fileno())
+            tty.setraw(sys.stdin.fileno())
+            tty.setcbreak(sys.stdin.fileno())
             self.channel.settimeout(0.0)
 
             while True:
