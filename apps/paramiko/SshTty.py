@@ -11,9 +11,8 @@ import operator
 import struct, fcntl, signal, socket, select
 import sys
 
-
-reload(sys)
-sys.setdefaultencoding('utf8')
+# reload(sys)
+# sys.setdefaultencoding('utf8')
 
 try:
     import termios
@@ -29,9 +28,13 @@ class Tty(object):
     A virtual tty class
     一个虚拟终端类，实现连接ssh和记录日志，基类
     """
-    def __init__(self):
-        self.ip = None
-        self.port = 22
+
+    def __init__(self, host, port=22, user='root', password=None, key=None):
+        self.host = host
+        self.port = port
+        self.user = user
+        self.password = password
+        self.key = key
         self.ssh = None
         self.channel = None
         self.remote_ip = ''
@@ -105,34 +108,19 @@ class Tty(object):
         self.screen.reset()
         return command
 
-    @staticmethod
-    def get_connect_info():
-        """
-        获取需要登陆的主机的信息和映射用户的账号密码
-        """
-        connect_info = {
-            'user': 'phpor',
-            'ip': '172.16.22.37',
-            'port': 22,
-            'role_name': 'phpor',
-            'role_pass': 'lijunjie'
-        }
-        return connect_info
-
     def get_connection(self):
         """
         获取连接成功后的ssh
         """
-        connect_info = self.get_connect_info()
 
         # 发起ssh连接请求 Make a ssh connection
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         try:
-            ssh.connect(connect_info.get('ip'),
-                        port=connect_info.get('port'),
-                        username=connect_info.get('role_name'),
-                        password=connect_info.get('role_pass'),
+            ssh.connect(self.host,
+                        port=self.port,
+                        username=self.user,
+                        password=self.password,
                         allow_agent=False,
                         look_for_keys=False)
 
@@ -150,6 +138,8 @@ class SshTty(Tty):
     A virtual tty class
     一个虚拟终端类，实现连接ssh和记录日志
     """
+
+    output_filter = None
 
     @staticmethod
     def get_win_size():
@@ -176,6 +166,9 @@ class SshTty(Tty):
         except Exception:
             pass
 
+    def set_output_filter(self, filter):
+        self.output_filter = filter;
+
     def posix_shell(self):
         """
         Use paramiko channel connect server interactive.
@@ -194,7 +187,7 @@ class SshTty(Tty):
                 try:
                     r, w, e = select.select([self.channel, sys.stdin], [], [])
                     flag = fcntl.fcntl(sys.stdin, fcntl.F_GETFL, 0)
-                    fcntl.fcntl(sys.stdin.fileno(), fcntl.F_SETFL, flag|os.O_NONBLOCK)
+                    fcntl.fcntl(sys.stdin.fileno(), fcntl.F_SETFL, flag | os.O_NONBLOCK)
                 except Exception:
                     pass
 
@@ -203,6 +196,9 @@ class SshTty(Tty):
                         x = self.channel.recv(10240)
                         if len(x) == 0:
                             break
+
+                        if self.output_filter:
+                            x = self.output_filter(x)
 
                         index = 0
                         len_x = len(x)
@@ -214,8 +210,6 @@ class SshTty(Tty):
                             except OSError as msg:
                                 if msg.errno == errno.EAGAIN:
                                     continue
-
-
 
                         self.vim_data += x
                         if input_mode:
@@ -283,4 +277,3 @@ class SshTty(Tty):
         # Shutdown channel socket
         channel.close()
         ssh.close()
-
