@@ -139,7 +139,11 @@ class SshTty(Tty):
     一个虚拟终端类，实现连接ssh和记录日志
     """
 
+    env = {}
     output_filter = None
+
+    def set_env(self, env):
+        self.env = env
 
     @staticmethod
     def get_win_size():
@@ -259,14 +263,13 @@ class SshTty(Tty):
         transport = ssh.get_transport()
         transport.set_keepalive(30)
         transport.use_compression(True)
-
-        # 获取连接的隧道并设置窗口大小 Make a channel and set windows size
-        global channel
         win_size = self.get_win_size()
-        # self.channel = channel = ssh.invoke_shell(height=win_size[0], width=win_size[1], term='xterm')
-        self.channel = channel = transport.open_session()
-        channel.get_pty(term='xterm', height=win_size[0], width=win_size[1])
-        channel.invoke_shell()
+        chan = self.channel = transport.open_session()
+
+        chan.get_pty(term='xterm', height=win_size[0], width=win_size[1])
+        chan.update_environment(environment=self.env)
+        chan.invoke_shell()
+
         try:
             signal.signal(signal.SIGWINCH, self.set_win_size)
         except:
@@ -274,6 +277,4 @@ class SshTty(Tty):
 
         self.posix_shell()
 
-        # Shutdown channel socket
-        channel.close()
         ssh.close()

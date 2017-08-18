@@ -2,6 +2,8 @@
 
 from SshTty import SshTty
 import re
+import getpass
+import sys, getopt
 
 
 class Filter:
@@ -20,8 +22,48 @@ class Filter:
 
         return s
 
-that = SshTty("172.16.22.37", 22, 'phpor', 'lijunjie')
-that.set_output_filter(Filter().output_filter)
-that.connect()
+
+class FilterSsh:
+
+    output_filter = None
+
+    def __init__(self, output_filter=None):
+        self.output_filter = output_filter
+
+    @staticmethod
+    def usage():
+        print """Usage:        
+        --help: show this help
+        -h: host
+        -p: port
+        -U: user
+        -P: password
+        """
+        return True
+
+    def main(self):
+        try:
+            opts, args = getopt.getopt(sys.argv[1:], "h:p:U:P:", ["help"])
+        except getopt.GetoptError:
+            FilterSsh.usage() and exit(1)
+
+        for opt, arg in opts:
+            if opt == '--help':
+                FilterSsh.usage() and exit(1)
+            elif opt == '-h':
+                host = arg
+            elif opt == '-p':
+                port = int(arg)
+            elif opt == '-U':
+                user = arg
+            elif opt == '-P':
+                password = arg
+
+        that = SshTty(host, port, user, password)
+        that.set_output_filter(self.output_filter)
+        # 环境变量需要在sshd中明确配置为Accept
+        that.set_env({"SSH_USER":getpass.getuser(), "SSH_USER_ROLE": "user"})
+        that.connect()
 
 
+FilterSsh(Filter().output_filter).main()
