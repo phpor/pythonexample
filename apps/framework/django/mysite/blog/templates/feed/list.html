@@ -1,0 +1,20 @@
+<html>
+<head>
+    <title>index</title>
+    <style>
+        dt {
+            font-size: 16;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<ul>
+    {% for feed in feeds %}
+    <dt><a href="/blog/user/{{feed.user.id}}">{{feed.user.name}}</a>  |  <a href="/blog/feed/{{feed.fid}}">{{feed.ctime}}</a></dt>
+    <dd>{{feed.content}}</dd>
+    {% endfor %}
+</ul>
+
+</body>
+</html>

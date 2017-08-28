@@ -1,0 +1,19 @@
+<html>
+<head>
+    <title>用户列表</title>
+    <style>
+        li {
+            font-size: 16;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<ul>
+    {% for user in users %}
+    <li><a href="/blog/user/{{user.id}}">{{user.name}}</a></li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
