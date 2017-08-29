@@ -7,6 +7,11 @@
     __foo: 双下划线的表示的是私有类型(private)的变量, 只能是允许这个类本身进行访问了。
 """
 
+"""
+关于静态方法和类方法： http://blog.csdn.net/GeekLeee/article/details/52624742
+    区别仅仅在于第一个参数是否是当前类的类名
+"""
+
 
 class A:  # 类定义前最好保留两个空行,注释也不要有的空行
     """
@@ -39,7 +44,11 @@ class A:  # 类定义前最好保留两个空行,注释也不要有的空行
 
     @staticmethod
     def new(name):  # 静态方法是靠注解实现的
-        return A(name)
+        return A(name)  # 对于用到当前类的情况，这里更适合使用@classmethod
+
+    @classmethod
+    def create(cls, name):
+        return cls(name)
 
 
 # 对象属性 和 类属性
