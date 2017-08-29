@@ -10,6 +10,6 @@ def index(request):
 
 
 def detail(request, uid):   # 关于路径变量的使用
-    user = User.objects.get(id=uid)
+    user = User.objects.get(id=uid)  # get 只能返回一个对象，如果结果集为多个对象就会报错
     return render(request, 'user/detail.html', {'user': user})
 
