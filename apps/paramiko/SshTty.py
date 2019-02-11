@@ -170,8 +170,8 @@ class SshTty(Tty):
         except Exception:
             pass
 
-    def set_output_filter(self, filter):
-        self.output_filter = filter;
+    def set_output_filter(self, output_filter):
+        self.output_filter = output_filter
 
     def posix_shell(self):
         """
@@ -201,7 +201,7 @@ class SshTty(Tty):
                         if len(x) == 0:
                             break
 
-                        if self.output_filter:
+                        if self.output_filter and not self.vim_flag:
                             x = self.output_filter(x)
 
                         index = 0
